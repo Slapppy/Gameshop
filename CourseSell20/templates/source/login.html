@@ -1,0 +1,40 @@
+{% block head %}
+    {% load static %}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в аккаунт</title>
+    <link href="{% static 'source/css/registration.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="main-wrapper p-4">
+        <div class="container">
+            <div class="auth-form">
+                <h1>Вход</h1>
+                <div class="form-inputs ">
+                    <form method="POST" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        <div class="user-input">
+                            <label>Email</label>
+                            <input type="text" name="email" id="email">
+                        </div>
+                        <div class="user-input">
+                            <label>Пароль</label>
+                            <input type="password" id="password" name="password">
+                        </div>
+                        <div class="forgot">
+                            <a href="#">Забыли пароль?</a>
+                        </div>
+                        <div class="button-send-wrap">
+                            <button type="submit" class="button-send">Вход</button>
+                        </div>
+
+                        <div class="register">
+                            <span>Еще нет учетной записи? </span><a href="{% url 'register' %}">Регистрация</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

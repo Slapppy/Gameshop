@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Knowify</title>
+	<link href="{% static 'source/css/registration.css' %}" rel="stylesheet">
+</head>
+
+<body>
+	<main class="main-wrapper">
+		<div class="container">
+			<div class="auth-form">
+				<h1>Регистрация</h1>
+				<div class="form-inputs">
+					<form method="post">
+                        {% csrf_token %}
+
+                        <div class="user-input">
+                             <label for="firstname">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+
+                        <div class="user-input">
+                            <label for="lastname">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+
+                        <div class="user-input">
+                            <label for="email">Email:</label>
+                            {{ form.email }}
+                        </div>
+
+                       <div class="user-input">
+                          <label for="password">Password</label>
+                            {{ form.password }}
+                        </div>
+
+                        <div class="button-send-wrap">
+                            <button type="submit" class="button-send">Sign up</button>
+                        </div>
+
+                      </form>
+                    {{ form.errors }}
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+
+</html>

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-from source.enums import Role
+from .enums import Role
 
 
 class CustomUserManager(BaseUserManager):
@@ -24,9 +24,10 @@ class CustomUserManager(BaseUserManager):
 class Game(models.Model):
     title = models.CharField(max_length=100)
     genre = models.CharField(max_length=50)
+    rating = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     description = models.TextField()
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    image = models.ImageField()
+    image = models.ImageField(upload_to="source/images")
     release_date = models.DateField()
 
 
@@ -45,6 +46,7 @@ class User(AbstractBaseUser):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     is_active = models.BooleanField(default=True)
+    balance = models.IntegerField(default=0)
     role = models.CharField(choices=Role.choices, max_length=15, default=Role.user)
 
     USERNAME_FIELD = "email"

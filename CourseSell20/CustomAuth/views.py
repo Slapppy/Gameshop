@@ -10,6 +10,7 @@ from django.views import View
 from django.http import JsonResponse
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+
 from .serializers import MyTokenObtainPairSerializer
 
 
@@ -21,6 +22,7 @@ class RegisterView(CreateView):
     """
     View for handling register page.
     """
+
     form_class = CustomUserCreationForm
     template_name = "source/register.html"
     success_url = reverse_lazy("login")
@@ -58,6 +60,6 @@ class LoginView(View):
             token_obtain_pair = MyTokenObtainPairView.as_view()(request).data
             login(request, user)
             request.session["refresh_token"] = token_obtain_pair["refresh"]
-            return redirect("main")
+            return redirect("game_list")
         else:
             return JsonResponse({"error": "Invalid credentials"})

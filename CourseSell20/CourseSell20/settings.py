@@ -76,6 +76,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "CourseSell20.wsgi.application"
 
+LOGIN_REDIRECT_URL = "game_list"
+LOGIN_URL = "game_list"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -127,6 +129,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

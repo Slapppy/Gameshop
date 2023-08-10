@@ -1,15 +1,10 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views import View
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.generic.edit import UpdateView
-from django.shortcuts import render, redirect
-from django.views import View
-from .igdbAPi import IGDBAPI
-from .forms import ProfileForm, UserForm
-from .models import Game, User
+from .forms import UserForm
+from .models import User
 from django.views import View
 from django.shortcuts import render, redirect
 from .igdbAPi import IGDBAPI
@@ -67,3 +62,23 @@ class AddGameView(View):
             return redirect("game_list")
 
         return render(request, self.template_name, {"form": form})
+
+
+class BalanceView(LoginRequiredMixin, View):
+    template_name = "source/balance.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        amount = int(request.POST.get('amount', 0))
+        if amount > 0:
+            user = request.user
+            user.balance += amount
+            user.save()
+        return redirect("profile")
+
+
+class CartListView(View):
+    def get(self, request):
+        return render(request, "source/cart.html")

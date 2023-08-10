@@ -27,7 +27,7 @@ class Game(models.Model):
     rating = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     description = models.TextField()
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    image = models.ImageField(upload_to="source/images")
+    image = models.ImageField(upload_to="source/static/source/images")
     release_date = models.DateField()
 
 

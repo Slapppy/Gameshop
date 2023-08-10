@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +16,7 @@
     <nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
       <div class="container-fluid">
         <!-- Brand -->
-        <a class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block" href="https://www.creative-tim.com/product/argon-dashboard" target="_blank">User profile</a>
+        <a class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block" href="{% url 'game_list' %}">LUGX</a>
         <!-- Form -->
         <!-- User -->
         <ul class="navbar-nav align-items-center d-none d-md-flex">
@@ -53,7 +54,7 @@
       </div>
     </nav>
     <!-- Header -->
-    <div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" style="min-height: 600px; background-color: #0a53be; background-size: cover; background-position: center top;">
+    <div class="header pb-5 pt-5 pt-lg-8 d-flex align-items-center" style="min-height: 200px; background-color: #0a53be; background-size: cover; background-position: center top;">
       <!-- Mask -->
       <span class="mask bg-gradient-default opacity-8"></span>
       <!-- Header container -->
@@ -73,8 +74,8 @@
               </div>
             </div>
             <div class="card-header text-center border-0 pt-4 pt-md-4 pb-0 pb-md-4">
-              <div class="d-flex justify-content-between">
-                <a href="#" class="btn btn-sm btn-info mr-4">Dashboard</a>
+                <div class="d-flex justify-content-between">
+                <a href="{% url 'balance' %}" class="btn btn-sm btn-info ml-5">Add Balance</a>
               </div>
             </div>
             <div class="card-body pt-0 pt-md-4">
@@ -82,7 +83,7 @@
                 <div class="col">
                   <div class="card-profile-stats d-flex justify-content-center mt-md-5">
                     <div>
-                      <span class="heading">{{ balance }}</span>
+                      <span class="heading">{{ balance }}$</span>
                       <span class="description">Balance</span>
                     </div>
                     <div>
@@ -94,20 +95,25 @@
               </div>
               <div class="text-center">
                 <h3>
-                  Jessica Jones<span class="font-weight-light"></span>
+                    {{first_name}} {{last_name}} <span class="font-weight-light"></span>
                 </h3>
               </div>
             </div>
           </div>
         </div>
         <div class="col-xl-8 order-xl-1">
+
           <div class="card bg-secondary shadow">
             <div class="card-header bg-white border-0">
               <div class="row align-items-center">
                 <div class="col-8">
                   <h3 class="mb-0">My account</h3>
                 </div>
+              <div class="col-4 text-right">
+                  <a href="#" class="btn btn-sm btn-info ml-auto">Dashboard</a>
               </div>
+              </div>
+
             </div>
             <div class="card-body">
               <form method="POST">
@@ -156,9 +162,7 @@
   <footer class="footer">
     <div class="row align-items-center justify-content-xl-between">
       <div class="col-xl-6 m-auto text-center">
-        <div class="copyright">
-          <p>Made with <a href="https://www.creative-tim.com/product/argon-dashboard" target="_blank">Argon Dashboard</a> by Creative Tim</p>
-        </div>
+
       </div>
     </div>
   </footer>

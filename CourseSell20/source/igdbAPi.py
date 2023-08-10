@@ -14,7 +14,7 @@ class IGDBAPI:
         url = f"{self.base_url}/games"
         headers = {
             "Client-ID": self.api_key,
-            "Authorization": f"Bearer dpgydk6q3pao2cn953h0ez1fl2p1t2",
+            "Authorization": f"Bearer b3kj2mcwkc2b2c32t0nhtj5eheoqb4",
         }
         data = f'fields name,genres.name,rating,summary,release_dates.date,cover.url; search "{query}"; limit 10;'
         response = requests.post(url, headers=headers, data=data)
@@ -25,11 +25,12 @@ class IGDBAPI:
         url = f"{self.base_url}/games"
         headers = {
             "Client-ID": "2m1av7jtmdrwx1ocbrlep22c3s4vtg",
-            "Authorization": f"Bearer dpgydk6q3pao2cn953h0ez1fl2p1t2",
+            "Authorization": f"Bearer b3kj2mcwkc2b2c32t0nhtj5eheoqb4",
         }
         data = f"fields name,genres.name,rating,summary,release_dates.date,cover.url; where id = {game_id}; limit 1;"
         response = requests.post(url, headers=headers, data=data)
         game_data = response.json()[0]
+
         release_date_str = game_data.get("release_dates", "")[0]["date"]
         print(game_data)
         print(release_date_str)

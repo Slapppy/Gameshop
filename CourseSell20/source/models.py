@@ -65,6 +65,8 @@ class User(AbstractBaseUser):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    sum_order = models.PositiveIntegerField(default=0)
+    quantity = models.PositiveIntegerField(default=0)
     order_date = models.DateTimeField(auto_now_add=True)
 
 
@@ -85,3 +87,6 @@ class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.user.first_name}'s Cart: {self.game.title} x{self.quantity}"

@@ -1,15 +1,18 @@
+import uuid
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.views.generic.edit import UpdateView
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import UpdateView, DeleteView
 from .forms import UserForm
-from .models import User
+from .models import User, Order, Review
+from django.core.mail import send_mail
 from django.views import View
 from django.shortcuts import render, redirect
 from .igdbAPi import IGDBAPI
 from .forms import AddGameForm
-from .models import Game
+from .models import Game, Cart
 
 
 class GameListView(View):
@@ -71,7 +74,7 @@ class BalanceView(LoginRequiredMixin, View):
         return render(request, self.template_name)
 
     def post(self, request):
-        amount = int(request.POST.get('amount', 0))
+        amount = int(request.POST.get("amount", 0))
         if amount > 0:
             user = request.user
             user.balance += amount
@@ -79,6 +82,124 @@ class BalanceView(LoginRequiredMixin, View):
         return redirect("profile")
 
 
-class CartListView(View):
+class ProductDetailView(DetailView):
+    model = Game
+    template_name = "source/product-details.html"
+    context_object_name = "game"
+    pk_url_kwarg = "id"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Получите отзывы для текущей игры
+        reviews = Review.objects.filter(game=self.object)
+
+        context['reviews'] = reviews
+        return context
+
+
+class AddToCartView(View):
+    def post(self, request, *args, **kwargs):
+        game_id = self.kwargs["game_id"]
+        print(game_id)
+        game = Game.objects.get(pk=game_id)
+        cart, created = Cart.objects.get_or_create(user=request.user, game=game)
+        if not created:
+            cart.quantity += 1
+            cart.save()
+        return redirect("cart")
+
+
+class RemoveFromCartView(View):
+    def post(self, request, *args, **kwargs):
+        cart_id = self.kwargs["cart_id"]
+        cart = Cart.objects.get(pk=cart_id)
+        if cart.quantity > 1:
+            cart.quantity -= 1
+            cart.save()
+        else:
+            cart.save()
+        return redirect("cart")
+
+
+class CartListView(ListView):
+    template_name = "source/cart.html"
+    model = Cart
+    context_object_name = "carts"
+
+    def get_queryset(self):
+        return Cart.objects.filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        total_price = sum(cart.game.price * cart.quantity for cart in context["carts"])
+        context["total_price"] = total_price
+        return context
+
+
+class RemoveCartItemView(View):
+    def get(self, request, *args, **kwargs):
+        cart_item = Cart.objects.get(pk=kwargs["pk"])
+        cart_item.delete()
+        return redirect("cart")
+
+
+def send_game_key_email(user, game, game_key):
+    subject = "Your Game Key"
+    message = f"Here is your game key for {game.title}: {game_key}"
+    from_email = "ax-marat@mail.com"
+    recipient_list = [user.email]
+    send_mail(subject, message, from_email, recipient_list)
+
+
+class CheckoutView(View):
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        cart_items = Cart.objects.filter(user=user)
+
+        total_price = sum(item.game.price * item.quantity for item in cart_items)
+
+        if user.balance >= total_price:
+            for item in cart_items:
+                game_key = str(uuid.uuid4())
+                send_game_key_email(user, item.game, game_key)
+                user.balance -= item.game.price
+                user.save()
+
+                order = Order.objects.create(
+                    user=user,
+                    game=item.game,
+                    sum_order=item.game.price * item.quantity,
+                    quantity=item.quantity,
+                )
+                item.delete()
+
+            return redirect(
+                "SuccessPay"
+            )  # Перенаправьте на страницу успешного завершения покупки
+        else:
+            return redirect("NoBalance")
+
+
+class SuccessPay(View):
     def get(self, request):
-        return render(request, "source/cart.html")
+        return render(request, "source/successpay.html")
+
+
+class NoBalance(View):
+    def get(self, request):
+        return render(request, "source/NoBalance.html")
+
+
+class SubmitReviewView(View):
+    def post(self, request, game_id, *args, **kwargs):
+        user = request.user
+        game = Game.objects.get(id=game_id)
+        rating = int(request.POST.get('rating'))
+        comment = request.POST.get('comment')
+
+        # Create and save the review
+        review = Review.objects.create(user=user, game=game, rating=rating, comment=comment)
+
+        return redirect('game_list')  # Redirect to the game detail page
+

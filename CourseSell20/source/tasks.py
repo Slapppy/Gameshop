@@ -4,19 +4,19 @@ from datetime import timedelta
 from django.utils import timezone
 from .models import User
 
+
 @shared_task
 def send_inactive_user_reminder():
-    # Найти пользователей, которые не заходили в магазин более 7 дней
     inactive_users = User.objects.filter(
-        is_active=True,
-        last_login__lte=timezone.now() - timedelta(seconds=20)
+        is_active=True, last_login__lte=timezone.now() - timedelta(days=7)
     )
 
     for user in inactive_users:
-        # Отправить электронное письмо с напоминанием
-        subject = "Предупреждение: Ваш последний вход в магазин был давно"
-        message = f"Уважаемый {user.first_name},\n\n" \
-                  f"Вы давно не заходили в наш магазин. Пожалуйста, посетите нас снова!"
+        subject = "Your last entry to the store was a long time ago"
+        message = (
+            f"Уважаемый {user.first_name},\n\n"
+            f"You haven't visited our store for a long time. Please visit us again!"
+        )
         from_email = "ax-marat@mail.com"
         to_email = [user.email]
 

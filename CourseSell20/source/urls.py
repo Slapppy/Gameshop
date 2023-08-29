@@ -1,4 +1,6 @@
 from django.urls import path
+from django.views.generic import TemplateView
+
 from source.views import (
     GameListView,
     ProfileView,
@@ -11,7 +13,9 @@ from source.views import (
     RemoveCartItemView,
     CheckoutView,
     SuccessPay,
-    NoBalance, SubmitReviewView,
+    NoBalance,
+    SubmitReviewView,
+    DashBoard,
 )
 
 urlpatterns = [
@@ -35,6 +39,13 @@ urlpatterns = [
     ),
     path("success/", SuccessPay.as_view(), name="SuccessPay"),
     path("nobalance/", NoBalance.as_view(), name="NoBalance"),
-    path('submitreview/<int:game_id>/', SubmitReviewView.as_view(), name='submitreview'),
-
+    path("dashboard/", DashBoard.as_view(), name="dashboard"),
+    path(
+        "submitreview/<int:game_id>/", SubmitReviewView.as_view(), name="submitreview"
+    ),
+    path(
+        "grafana-graph/",
+        TemplateView.as_view(template_name="source/graph.html"),
+        name="grafana-graph",
+    ),
 ]

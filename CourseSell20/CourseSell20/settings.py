@@ -54,8 +54,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'django_prometheus.middleware.PrometheusBeforeMiddleware',
-
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
 ]
 
 ROOT_URLCONF = "CourseSell20.urls"
@@ -102,15 +101,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
 ]
 
 # Internationalization
@@ -156,13 +149,13 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "slappyyya@gmail.com"
 EMAIL_HOST_PASSWORD = "w0PjvcQEKg8rLTD1"
 
-CELERY_BROKER_URL = "amqp://Slappy:V6NzmqP1@localhost:5672//"  # URL RabbitMQ брокера
-CELERY_RESULT_BACKEND = "rpc://"  # Используем RPC для результатов
+CELERY_BROKER_URL = "amqp://Slappy:V6NzmqP1@localhost:5672//"
+CELERY_RESULT_BACKEND = "rpc://"
 
 # Настройка для периодического выполнения задачи
 CELERY_BEAT_SCHEDULE = {
     "send-inactive-user-reminder": {
         "task": "source.tasks.send_inactive_user_reminder",
-        "schedule": timedelta(seconds=10),  # Задача будет запускаться каждый день
+        "schedule": timedelta(days=1),
     },
 }

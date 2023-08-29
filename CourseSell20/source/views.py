@@ -1,6 +1,7 @@
 import uuid
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.views.generic import DetailView, ListView
@@ -13,6 +14,8 @@ from django.shortcuts import render, redirect
 from .igdbAPi import IGDBAPI
 from .forms import AddGameForm
 from .models import Game, Cart
+from prometheus_client import start_http_server, Counter
+from django.apps import AppConfig
 
 
 class GameListView(View):
@@ -94,7 +97,7 @@ class ProductDetailView(DetailView):
         # Получите отзывы для текущей игры
         reviews = Review.objects.filter(game=self.object)
 
-        context['reviews'] = reviews
+        context["reviews"] = reviews
         return context
 
 
@@ -191,15 +194,41 @@ class NoBalance(View):
         return render(request, "source/NoBalance.html")
 
 
+class DashBoard(View):
+    def get(self, request):
+        return render(request, "source/dashboard.html")
+
+
 class SubmitReviewView(View):
     def post(self, request, game_id, *args, **kwargs):
         user = request.user
         game = Game.objects.get(id=game_id)
-        rating = int(request.POST.get('rating'))
-        comment = request.POST.get('comment')
+        rating = int(request.POST.get("rating"))
+        comment = request.POST.get("comment")
 
         # Create and save the review
-        review = Review.objects.create(user=user, game=game, rating=rating, comment=comment)
+        review = Review.objects.create(
+            user=user, game=game, rating=rating, comment=comment
+        )
 
-        return redirect('game_list')  # Redirect to the game detail page
+        return redirect("game_list")  # Redirect to the game detail page
 
+
+http_requests_total = Counter("django_http_requests_total", "Total HTTP Requests")
+
+
+def my_view(request):
+    http_requests_total.inc()
+    return HttpResponse("Hello, World!")
+
+
+class YourAppConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "your_app"
+
+    def ready(self):
+        # Регистрация метрик
+        your_metric = Counter("your_metric", "Description of your metric")
+
+        # Запуск HTTP сервера для Prometheus
+        start_http_server(8001)  # Настройте порт по вашему усмотрению

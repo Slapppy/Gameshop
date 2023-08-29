@@ -12,5 +12,17 @@ services:
     volumes:
       - "db:/var/lib/postgresql/data"
 
+  rabbitmq:
+    image: "rabbitmq:management"  # Используем образ с веб-интерфейсом управления
+    ports:
+      - "5672:5672"  # Порт для AMQP
+      - "15672:15672"  # Порт для веб-интерфейса
+    environment:
+      RABBITMQ_DEFAULT_USER: Slappy  # Замените на свои значения
+      RABBITMQ_DEFAULT_PASS: V6NzmqP1  # Замените на свои значения
+    volumes:
+      - "rabbitmq_data:/var/lib/rabbitmq"
+
 volumes:
   db:
+  rabbitmq_data:

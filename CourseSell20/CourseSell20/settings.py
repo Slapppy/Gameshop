@@ -12,10 +12,11 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
+import os
+from celery import Celery
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -27,7 +28,6 @@ SECRET_KEY = "django-insecure-q*t@s^!)a^&#(%t#j&ldv_-f(lu4%umm=zm)ld&*cdp0vwci5i
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     "api",
     "CustomAuth",
     "source",
+    "django_prometheus",
 ]
-
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -54,6 +54,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
+
 ]
 
 ROOT_URLCONF = "CourseSell20.urls"
@@ -93,7 +95,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -112,7 +113,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -123,7 +123,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -148,7 +147,6 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
-
 AUTH_USER_MODEL = "source.User"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -157,3 +155,14 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "slappyyya@gmail.com"
 EMAIL_HOST_PASSWORD = "w0PjvcQEKg8rLTD1"
+
+CELERY_BROKER_URL = "amqp://Slappy:V6NzmqP1@localhost:5672//"  # URL RabbitMQ брокера
+CELERY_RESULT_BACKEND = "rpc://"  # Используем RPC для результатов
+
+# Настройка для периодического выполнения задачи
+CELERY_BEAT_SCHEDULE = {
+    "send-inactive-user-reminder": {
+        "task": "source.tasks.send_inactive_user_reminder",
+        "schedule": timedelta(seconds=10),  # Задача будет запускаться каждый день
+    },
+}

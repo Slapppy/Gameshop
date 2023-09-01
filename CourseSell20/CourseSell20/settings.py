@@ -142,12 +142,13 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = "source.User"
 
+DEFAULT_FROM_EMAIL = "slappyyya@gmail.com"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp-relay.brevo.com"
-EMAIL_PORT = 587
+EMAIL_HOST = "smtp.elasticemail.com"
+EMAIL_PORT = 2525
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "slappyyya@gmail.com"
-EMAIL_HOST_PASSWORD = "w0PjvcQEKg8rLTD1"
+EMAIL_HOST_PASSWORD = "BE0E19A345C3B8C2BD1C3237CE2D613A6A84"
 
 CELERY_BROKER_URL = "amqp://Slappy:V6NzmqP1@localhost:5672//"
 CELERY_RESULT_BACKEND = "rpc://"

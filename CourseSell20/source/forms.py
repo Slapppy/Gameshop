@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.auth.forms import PasswordChangeForm
 from source.models import User
 
 
@@ -46,3 +45,13 @@ class UserForm(forms.ModelForm):
 class AddGameForm(forms.Form):
     game_id = forms.IntegerField(label="Game ID")
     price = forms.DecimalField(max_digits=8, decimal_places=2)
+
+
+# class PasswordResetFormm(forms.Form):
+#     email = forms.EmailField(label="Email")
+#
+#     def clean_email(self):
+#         email = self.cleaned_data.get('email')
+#         if not User.objects.filter(email=email, is_active=True).exists():
+#             raise forms.ValidationError("Пользователь с таким email не существует или не активен.")
+#         return email

@@ -1,9 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-
 from .enums import Role
-from prometheus_client import Counter, Histogram
-from django_prometheus.models import ExportModelOperationsMixin
 
 
 class CustomUserManager(BaseUserManager):
@@ -72,11 +69,6 @@ class Order(models.Model):
     order_date = models.DateTimeField(auto_now_add=True)
 
 
-ExportModelOperationsMixin(Order)
-
-# Создайте дополнительные метрики, если необходимо
-order_counter = Counter("myapp_order_total", "Total number of orders")
-order_sum_histogram = Histogram("myapp_order_sum", "Order sum distribution")
 
 
 class Review(models.Model):

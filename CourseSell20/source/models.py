@@ -69,8 +69,6 @@ class Order(models.Model):
     order_date = models.DateTimeField(auto_now_add=True)
 
 
-
-
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)

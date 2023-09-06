@@ -1,7 +1,6 @@
 import uuid
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib import messages
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import UpdateView

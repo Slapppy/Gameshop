@@ -243,14 +243,48 @@
                 <div class="col-8">
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">Today's Money</p>
-                    <h5 class="font-weight-bolder">
-                      $53,000
+                    <h5 class="font-weight-bolder" id="daily-revenue">
+                        $0,0
                     </h5>
                     <p class="mb-0">
-                      <span class="text-success text-sm font-weight-bolder">+55%</span>
-                      since yesterday
+                        <span class="text-success text-sm font-weight-bolder" id="revenue-change">+0%</span>
+                        since yesterday
                     </p>
-                  </div>
+                </div>
+
+                <script>
+                    function updateDailyRevenue() {
+                        fetch('/api/daily-revenue/') // Замените на URL вашего API
+                            .then(response => response.json())
+                            .then(data => {
+                                // Обновите данные на странице
+                                const dailyRevenueElement = document.getElementById('daily-revenue');
+                                const revenueChangeElement = document.getElementById('revenue-change');
+
+                                // Обновите текст элементов с данными из API
+                                dailyRevenueElement.textContent = `$${data.daily_revenue.toFixed(2)}`; // Преобразуйте валюту в нужный формат
+                                revenueChangeElement.textContent = `${data.revenue_change_percentage.toFixed(2)}%`;
+
+                                // Установите класс для изменения цвета в зависимости от значения изменения выручки
+                                if (data.revenue_change > 0) {
+                                    revenueChangeElement.classList.add('text-success');
+                                    revenueChangeElement.classList.remove('text-danger');
+                                } else if (data.revenue_change < 0) {
+                                    revenueChangeElement.classList.add('text-danger');
+                                    revenueChangeElement.classList.remove('text-success');
+                                } else {
+                                    // Если изменения нет, оставьте класс по умолчанию
+                                    revenueChangeElement.classList.remove('text-success', 'text-danger');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Ошибка при загрузке данных из API:', error);
+                            });
+                    }
+
+                    // Вызывайте updateDailyRevenue() для загрузки данных из API и обновления страницы
+                    updateDailyRevenue();
+                </script>
                 </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
@@ -269,7 +303,7 @@
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">Today's Users</p>
                     <h5 class="font-weight-bolder">
-                      2,300
+                      0
                     </h5>
                     <p class="mb-0">
                       <span class="text-success text-sm font-weight-bolder">+3%</span>
@@ -294,7 +328,7 @@
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">New Clients</p>
                     <h5 class="font-weight-bolder">
-                      +3,462
+                      0
                     </h5>
                     <p class="mb-0">
                       <span class="text-danger text-sm font-weight-bolder">-2%</span>
@@ -318,13 +352,46 @@
                 <div class="col-8">
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">Sales</p>
-                    <h5 class="font-weight-bolder">
-                      $103,430
+                    <h5 class="font-weight-bolder" id="monthly-revenue">
+                        $103,430
                     </h5>
                     <p class="mb-0">
-                      <span class="text-success text-sm font-weight-bolder">+5%</span> than last month
+                        <span class="text-success text-sm font-weight-bolder" id="revenue-change">+0%</span> than last month
                     </p>
-                  </div>
+                </div>
+                    <script>
+                        function updateMonthlyRevenue() {
+                            fetch('/api/monthly-revenue/') // Замените на URL вашего API
+                                .then(response => response.json())
+                                .then(data => {
+                                    // Обновите данные на странице
+                                    const monthlyRevenueElement = document.getElementById('monthly-revenue');
+                                    const revenueChangeElement = document.getElementById('revenue-change');
+
+                                    // Обновите текст элементов с данными из API
+                                    monthlyRevenueElement.textContent = `$${data.monthly_revenue.toFixed(2)}`; // Преобразуйте валюту в нужный формат
+                                    revenueChangeElement.textContent = `${data.revenue_change_percentage.toFixed(2)}%`;
+
+                                    // Установите класс для изменения цвета в зависимости от значения изменения выручки
+                                    if (data.revenue_change > 0) {
+                                        revenueChangeElement.classList.add('text-success');
+                                        revenueChangeElement.classList.remove('text-danger');
+                                    } else if (data.revenue_change < 0) {
+                                        revenueChangeElement.classList.add('text-danger');
+                                        revenueChangeElement.classList.remove('text-success');
+                                    } else {
+                                        // Если изменения нет, оставьте класс по умолчанию
+                                        revenueChangeElement.classList.remove('text-success', 'text-danger');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Ошибка при загрузке данных из API:', error);
+                                });
+                        }
+
+                        // Вызывайте updateMonthlyRevenue() для загрузки данных из API и обновления страницы
+                        updateMonthlyRevenue();
+</script>
                 </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
@@ -675,18 +742,37 @@
   <script src="{% static 'source/assets/js/plugins/perfect-scrollbar.min.js' %}"></script>
   <script src="{% static 'source/assets/js/plugins/smooth-scrollbar.min.js' %}"></script>
   <script src="{% static 'source/assets/js/plugins/chartjs.min.js' %}"></script>
-  <script>
+<script>
+  // Функция для получения данных из API
+  function fetchData() {
+    fetch('/api/orders/week/') // Замените на URL вашего API
+      .then(response => response.json())
+      .then(data => {
+        // Преобразуйте данные из API в формат, подходящий для графика
+        const labels = data.map(order => order.order_date); // Используйте даты заказов как метки
+        const values = data.map(order => order.sum_order); // Используйте суммы заказов как значения
+
+        // Обновите данные графика
+        updateChart(labels, values);
+      })
+      .catch(error => {
+        console.error('Ошибка при загрузке данных из API:', error);
+      });
+  }
+
+  // Функция для обновления данных графика
+  function updateChart(labels, values) {
     var ctx1 = document.getElementById("chart-line").getContext("2d");
 
     var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
-
     gradientStroke1.addColorStop(1, 'rgba(94, 114, 228, 0.2)');
     gradientStroke1.addColorStop(0.2, 'rgba(94, 114, 228, 0.0)');
     gradientStroke1.addColorStop(0, 'rgba(94, 114, 228, 0)');
+
     new Chart(ctx1, {
       type: "line",
       data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        labels: labels, // Используйте метки из данных API
         datasets: [{
           label: "Mobile apps",
           tension: 0.4,
@@ -696,9 +782,8 @@
           backgroundColor: gradientStroke1,
           borderWidth: 3,
           fill: true,
-          data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+          data: values, // Используйте данные из данных API
           maxBarThickness: 6
-
         }],
       },
       options: {
@@ -757,7 +842,13 @@
         },
       },
     });
-  </script>
+  }
+
+  // Вызывайте fetchData() для загрузки данных из API и обновления графика
+  fetchData();
+</script>
+
+
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -770,7 +861,7 @@
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="../assets/js/argon-dashboard.min.js?v=2.0.4"></script>
+  <script src="{% static "source/assets/js/argon-dashboard.min.js?v=2.0.4" %}"></script>
 </body>
 
 </html>

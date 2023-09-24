@@ -1,51 +1,23 @@
 pipeline {
     agent any
 
-    environment {
-        DJANGO_SETTINGS_MODULE = 'CourseSell20.settings'
-    }
-
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-
-        stage('Build') {
+        stage('Build and Test') {
             steps {
-                script {
-                    docker.build("CourseSell20", "-f ./Dockerfile ./CourseSell20")
-                }
+                sh 'docker-compose build' # Сборка Docker-контейнеров
+                sh 'docker-compose up -d'  # Запуск контейнеров в фоновом режиме
+                sh 'docker-compose exec django python manage.py test' # Запуск тестов
             }
         }
-
-        stage('Test') {
-            steps {
-                script {
-                    docker.image("CourseSell20").run("--rm -e DJANGO_SETTINGS_MODULE=CourseSell20.settings python manage.py test")
-                }
-            }
-        }
-
         stage('Deploy') {
             steps {
-                script {
-                    docker-compose up -d --build
-                }
-            }
-        }
-    }
-
-    post {
-        success {
-            script {
-                currentBuild.result = 'SUCCESS'
-            }
-        }
-        failure {
-            script {
-                currentBuild.result = 'FAILURE'
+                sh 'docker-compose down' # Остановка контейнеров
+                sh 'docker-compose up -d' # Повторный запуск контейнеров
             }
         }
     }

@@ -13,9 +13,9 @@ pipeline {
             steps {
                 script {
                     def workspaceDir = pwd() // Получаем текущую директорию
-                    def dockerComposeFile = "${workspaceDir}/docker-compose.yml"
+                    def dockerComposeFile = "${workspaceDir}/CourseSell20/docker-compose.yml"
                     sh "cd ${workspaceDir} && docker-compose -f ${dockerComposeFile} build"
-                    // Другие шаги сборки и тестирования
+
                 }
             }
         }
@@ -24,9 +24,9 @@ pipeline {
             steps {
                 script {
                     def workspaceDir = pwd() // Получаем текущую директорию
-                    def dockerComposeFile = "${workspaceDir}/path/to/your/docker-compose.yml"
+                    def dockerComposeFile = "${workspaceDir}/CourseSell20/docker-compose.yml"
                     sh "cd ${workspaceDir} && docker-compose -f ${dockerComposeFile} up -d --build"
-                    // Другие шаги развертывания
+
                 }
             }
         }

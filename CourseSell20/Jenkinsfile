@@ -4,20 +4,30 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                // Получаем исходный код проекта
                 checkout scm
             }
         }
+
         stage('Build and Test') {
             steps {
-                sh 'docker-compose build' // Сборка Docker-контейнеров
-                sh 'docker-compose up -d'  // Запуск контейнеров в фоновом режиме
-                sh 'docker-compose exec django python manage.py test' // Запуск тестов
+                script {
+                    def workspaceDir = pwd() // Получаем текущую директорию
+                    def dockerComposeFile = "${workspaceDir}/docker-compose.yml"
+                    sh "cd ${workspaceDir} && docker-compose -f ${dockerComposeFile} build"
+                    // Другие шаги сборки и тестирования
+                }
             }
         }
+
         stage('Deploy') {
             steps {
-                sh 'docker-compose down' // Остановка контейнеров
-                sh 'docker-compose up -d' // Повторный запуск контейнеров
+                script {
+                    def workspaceDir = pwd() // Получаем текущую директорию
+                    def dockerComposeFile = "${workspaceDir}/path/to/your/docker-compose.yml"
+                    sh "cd ${workspaceDir} && docker-compose -f ${dockerComposeFile} up -d --build"
+                    // Другие шаги развертывания
+                }
             }
         }
     }

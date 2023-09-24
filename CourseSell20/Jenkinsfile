@@ -12,8 +12,8 @@ pipeline {
         stage('Build and Test') {
             steps {
                 script {
-                    def dockerComposeFile = "$/docker-compose.yml"
-                    sh "docker-compose -f ${dockerComposeFile} build"
+                    def dockerComposeFile = "/docker-compose.yml"
+                    sh "docker-compose -f {dockerComposeFile} build"
                     // Другие шаги сборки и тестирования
                 }
             }

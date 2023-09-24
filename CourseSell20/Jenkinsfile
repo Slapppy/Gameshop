@@ -4,20 +4,27 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                // Получаем исходный код проекта
                 checkout scm
             }
         }
+
         stage('Build and Test') {
             steps {
-                sh 'docker-compose build'
-                sh 'docker-compose up -d'
-                sh 'docker-compose exec django python manage.py migrate'
+                script {
+                    def dockerComposeFile = "$./docker-compose.yml"
+                    sh "docker-compose -f ${dockerComposeFile} build"
+                    // Другие шаги сборки и тестирования
+                }
             }
         }
+
         stage('Deploy') {
             steps {
-                sh 'docker-compose down'
-                sh 'docker-compose up -d'
+                script {
+                    def dockerComposeFile = "$./docker-compose.yml"
+                    sh "docker-compose -f ${dockerComposeFile} up -d --build"
+                }
             }
         }
     }

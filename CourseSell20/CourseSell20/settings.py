@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-import os
 from datetime import timedelta
 from pathlib import Path
 import os
@@ -27,7 +26,7 @@ SECRET_KEY = "django-insecure-q*t@s^!)a^&#(%t#j&ldv_-f(lu4%umm=zm)ld&*cdp0vwci5i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -84,13 +83,13 @@ LOGIN_URL = "game_list"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME", "GameShop"),
-        "USER": os.environ.get("DB_USER", "GameShop"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", "4sqyX8"),
-        "HOST": os.environ.get("DB_HOST", "localhost"),
-        "PORT": int(os.environ.get("DB_PORT", 5432)),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get("DB_NAME", "GameShop"),
+        'USER': os.environ.get("DB_USER", "GameShop"),
+        'PASSWORD': os.environ.get("DB_PASSWORD", "4sqyX8"),
+        'HOST': 'postgres',
+        'PORT': 5432,
     }
 }
 
@@ -163,6 +162,10 @@ CELERY_RESULT_BACKEND = "rpc://"
 CELERY_BEAT_SCHEDULE = {
     "send-inactive-user-reminder": {
         "task": "source.tasks.send_inactive_user_reminder",
-        "schedule": timedelta(days=1),
+        "schedule": timedelta(seconds=10),
     },
 }
+
+
+
+
